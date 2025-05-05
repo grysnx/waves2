@@ -21,7 +21,7 @@ function logInfo(message) {
 }
 function logError(error) {
   const msg = error instanceof Error ? error.message : error;
-  console.error(`[ERROR] ${msg}`);
+  console.error(`[ERR] ${msg}`);
 }
 
 process.on("uncaughtException", (err) => logError(`Unhandled Exception: ${err}`));
@@ -88,6 +88,7 @@ if (cluster.isPrimary) {
   app.get("/g", (req, res) => res.sendFile(path.join(publicPath, "!.html")));
   app.get("/a", (req, res) => res.sendFile(path.join(publicPath, "!!.html")));
   app.get("/ai", (req, res) => res.sendFile(path.join(publicPath, "!!!.html")));
+  app.get("/resent", (req, res) => res.sendFile(path.join(publicPath, "resent", "index.html")));
   app.use((req, res) => res.status(404).sendFile(path.join(publicPath, "404.html")));
 
   const server = createServer(app);
@@ -120,7 +121,7 @@ if (cluster.isPrimary) {
     ws.on("close", () => {
       clearInterval(pingInterval);
       const avgLatency = latencies.length ? latencies.reduce((a, b) => a + b) / latencies.length : 0;
-      logInfo(`Connection from ${remoteAddress} closed. Average Latency: ${avgLatency.toFixed(2)}ms.`);
+      logInfo(`Conn from ${remoteAddress} closed. Avg: ${avgLatency.toFixed(2)}ms.`);
     });
   });
 
